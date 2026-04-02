@@ -23,7 +23,7 @@ jobs:
 
       - name: 의존성 설치
         run: |
-          pip install -r crawler/requirements.txt
+          pip install -r crawl/requirements.txt
 
       - name: CU 크롤링
         continue-on-error: true
@@ -31,7 +31,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CRAWL_BRAND: cu
-        run: python crawler/crawl.py
+        run: python crawl/crawl.py
 
       - name: GS25 크롤링
         continue-on-error: true
@@ -39,7 +39,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CRAWL_BRAND: gs25
-        run: python crawler/crawl.py
+        run: python crawl/crawl.py
 
       - name: 세븐일레븐 크롤링
         continue-on-error: true
@@ -47,7 +47,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CRAWL_BRAND: seven
-        run: python crawler/crawl.py
+        run: python crawl/crawl.py
 
       - name: 이마트24 크롤링
         continue-on-error: true
@@ -55,7 +55,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CRAWL_BRAND: emart24
-        run: python crawler/crawl.py
+        run: python crawl/crawl.py
 
       - name: 크롤링 완료 알림
         if: always()
