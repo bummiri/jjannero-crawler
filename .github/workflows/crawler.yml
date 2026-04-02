@@ -1,0 +1,63 @@
+name: 편의점 행사 크롤러 (주 1회)
+
+on:
+  schedule:
+    # 매주 월요일 17:00 UTC = 화요일 02:00 KST
+    - cron: "0 17 * * 0"
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 의존성 설치
+        run: |
+          pip install -r crawler/requirements.txt
+
+      - name: CU 크롤링
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CRAWL_BRAND: cu
+        run: python crawler/crawl.py
+
+      - name: GS25 크롤링
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CRAWL_BRAND: gs25
+        run: python crawler/crawl.py
+
+      - name: 세븐일레븐 크롤링
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CRAWL_BRAND: seven
+        run: python crawler/crawl.py
+
+      - name: 이마트24 크롤링
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CRAWL_BRAND: emart24
+        run: python crawler/crawl.py
+
+      - name: 크롤링 완료 알림
+        if: always()
+        run: |
+          echo "✅ 편의점 크롤링 완료: $(date '+%Y-%m-%d %H:%M KST')"
